@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Looking Glass Hours</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Courier New', monospace;
+        }
+
+        .container {
+            height: 100vh;
+            background: linear-gradient(45deg, #1a1a1a, #2c2c2c);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Space effect */
+        .container::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            top: -50%;
+            left: -50%;
+            background: radial-gradient(1px 1px at center, rgba(255,255,255,.2) 0%, rgba(255,255,255,0) 60%);
+            animation: space 10s infinite linear;
+            pointer-events: none;
+        }
+
+        @keyframes space {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .content {
+            position: relative;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            max-width: 600px;
+            padding: 2rem;
+        }
+
+        .typing-text {
+            margin: 0;
+            font-size: 1.5rem;
+            line-height: 1.6;
+            opacity: 0;
+            min-height: 8rem;
+        }
+
+        .continue-button {
+            opacity: 0;
+            margin-top: 2rem;
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: rgba(255, 255, 255, 0.8);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .continue-button:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .typing-animation {
+            animation: fadeIn 0.5s forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1em;
+            background: rgba(255, 255, 255, 0.8);
+            margin-left: 2px;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="content">
+            <p id="typing-text" class="typing-text">
+                Some endings leave pieces behind.<br>
+                When you're ready to gather them,
+            </p>
+            <button id="continue-button" class="continue-button" style="display: none;">
+                click here
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function typeWriter(text, element, delay = 50) {
+            let i = 0;
+            element.innerHTML = ''; // Clear existing text
+            
+            function type() {
+                if (i < text.length) {
+                    if (text.charAt(i) === '<') {
+                        // Skip HTML tags
+                        const closingIndex = text.indexOf('>', i);
+                        element.innerHTML += text.substring(i, closingIndex + 1);
+                        i = closingIndex + 1;
+                    } else {
+                        element.innerHTML += text.charAt(i);
+                        i++;
+                    }
+                    setTimeout(type, delay);
+                } else {
+                    // Show button after typing
+                    document.getElementById('continue-button').style.display = 'inline-block';
+                    document.getElementById('continue-button').classList.add('typing-animation');
+                }
+            }
+            
+            type();
+        }
+
+        // Start typing animation when page loads
+        window.onload = function() {
+            const textElement = document.getElementById('typing-text');
+            textElement.style.opacity = 1;
+            typeWriter(textElement.innerHTML, textElement);
+        }
+
+        // Add button functionality
+        document.getElementById('continue-button').onclick = function() {
+            // Add your redirect or next step here
+            console.log('Button clicked');
+        }
+    </script>
+</body>
+</html>
